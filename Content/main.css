@@ -1,0 +1,15 @@
+/* Main CSS styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f6fa;
+    color: #2d3436;
+    line-height: 1.6;
+}
+
+.navbar {
+    background-color: #2d3436;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Add other essential styles from your <style> tag */
