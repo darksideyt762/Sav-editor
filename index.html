@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="description" content="GameSave Manager: Edit your game save files with this powerful online tool. Supports RPGMaker, Renpy, Unity, UnrealEngine and more.">
+    <meta property="og:description" content="GameSave Manager: Edit your game save files with this powerful online tool. Supports RPGMaker, Renpy, Unity, UnrealEngine and more." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameSave Manager</title>
+    <meta property="og:url" content="https://www.gamesavemanager.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="GameSave Manager" />
+    <meta property="og:image" content="https://www.gamesavemanager.com/Content/img/save_icon.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="256" />
+    <meta property="og:image:height" content="256" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+            --success: #00b894;
+            --info: #0984e3;
+            --warning: #fdcb6e;
+            --danger: #d63031;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            padding-top: 70px;
+        }
+        
+        .navbar {
+            background-color: var(--dark);
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand, .navbar-nav li a {
+            color: var(--light) !important;
+        }
+        
+        .navbar-nav li a:hover {
+            color: var(--secondary) !important;
+        }
+        
+        .jumbotron {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(108, 92, 231, 0.3);
+            margin-top: 20px;
+            padding: 30px;
+        }
+        
+        .panel {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .panel:hover {
+            transform: translateY(-5px);
+        }
+        
+        .panel-heading {
+            background-color: var(--primary);
+            color: white;
+            border-radius: 8px 8px 0 0 !important;
+            border: none;
+            padding: 15px;
+        }
+        
+        .panel-title {
+            font-weight: 500;
+            font-size: 18px;
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            border: none;
+            padding: 12px 24px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-success:hover {
+            background-color: #00a884;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 184, 148, 0.3);
+        }
+        
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+            background-color: #dfe6e9;
+            margin-top: 15px;
+        }
+        
+        .progress-bar {
+            background-color: var(--success);
+        }
+        
+        .hint42 {
+            color: #636e72;
+            font-style: italic;
+            margin: 10px 0 20px;
+        }
+        
+        .qnavi {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 150;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        
+        .qnavi:hover {
+            opacity: 1;
+        }
+        
+        .qnavi .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            margin-bottom: 5px;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        footer {
+            margin-top: 40px;
+            padding: 20px 0;
+            color: #636e72;
+            text-align: center;
+        }
+        
+        .media-object {
+            max-width: 64px;
+            border-radius: 8px;
+        }
+        
+        .time {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .line12 li {
+            margin-bottom: 8px;
+        }
+        
+        .media {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+        }
+        
+        .media-left {
+            padding-right: 20px;
+        }
+        
+        .media-body {
+            flex: 1;
+        }
+        
+        .panel-footer {
+            background-color: #f8f9fa;
+            border-radius: 0 0 8px 8px;
+            padding: 10px 15px;
+            color: #636e72;
+        }
+        
+        .fileinput-button {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        
+        .fileinput-button input {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 0;
+            opacity: 0;
+            font-size: 200px;
+            direction: ltr;
+            cursor: pointer;
+        }
+        
+        .footer-hint {
+            margin-bottom: 15px;
+        }
+        
+        .container.body-content {
+            padding-bottom: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="/" class="navbar-brand" title="GameSave Manager"><i class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></i></a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/" title="GameSave Manager">Editors</a></li>
+                    <li>
+                        <a target="_blank" href="https://www.patreon.com/saveeditor" title="Support us" role="button">
+                            <i class="glyphicon glyphicon-heart" aria-hidden="true"></i>
+                            Support Us
+                        </a>
+                    </li>
+                    <li>
+                        <a target="_blank" href="https://translate.saveeditonline.com" title="Game Translator" role="button">Translator</a>
+                    </li>
+                    <li><a href="/Contact" title="Contact">Contact</a></li>
+                    <li>
+                        <a href="https://www.patreon.com/oauth2/authorize?response_type=code&amp;client_id=iqqLWEcbdqBzTO1sh5uf-Ncx7yM8mbZHWXzWbtHYqBCFH3ufiw-DQ7NEWxCy1WdB&amp;redirect_uri=https://www.saveeditonline.com/pauth" title="Login">Login</a>
+                    </li>
+                    <li>
+                        <a href="/DarkVersion" title="Dark mode"><i class="glyphicon glyphicon-adjust" aria-hidden="true"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        <div class="jumbotron" itemscope itemtype="http://schema.org/Organization">
+            <h1 itemprop="name">GameSave Manager</h1>
+            <link itemprop="url" href="https://www.gamesavemanager.com/" />
+            <p class="lead" itemprop="description">
+                This online tool helps you modify game save files to adjust values like currency, items, and stats.<br />
+                Supports various game engines including RPG Maker, Ren'Py, Unity, Unreal Engine, and more.
+            </p>
+
+            <ul class="line12">
+                <li>Click <b>UPLOAD FILE</b> and select your save file. Wait for the upload to complete.</li>
+                <li>Edit the values you want to change and click <b>Download</b> to get your modified save file.</li>
+            </ul>
+            <meta itemprop="logo" content="https://www.gamesavemanager.com/Content/img/save_icon.png" />
+        </div>
+
+        <span class="btn btn-success fileinput-button">
+            <i class="glyphicon glyphicon-upload"></i>
+            <span>UPLOAD FILE</span>
+            <input id="fileupload" type="file" name="file">
+        </span>
+        <div class="hint42"><i>Or drag and drop your file here</i></div>
+        <div id="progress" class="progress">
+            <div class="progress-bar progress-bar-success"></div>
+        </div>
+
+        <div id="editorForm">
+        </div>
+
+        <div id="news">
+
+            <div class="panel panel-default news" id="editor-3013" itemscope itemtype="http://schema.org/CreativeWork">
+                <link itemprop="url" href="#editor-3013" />
+                <div class="panel-heading">
+                    <h2 class="panel-title" itemprop="name">
+                        *.rsv (Rags Player 2.4)
+                    </h2>
+                    <div class="time" itemprop="dateCreated">3/24/2018</div>
+                </div>
+                <div class="panel-body">
+                    <div class="media">
+                        <div class="media-left col-md-1">
+                            <img itemprop="image" class="media-object" src="/Content/img/Rags.png" alt="..." />
+                        </div>
+                        <div class="media-body col-md-9" itemprop="description">
+                            Plus an improved Unity3D Save Editor<br />
+                            Features: variables (money, items, stats)<br />
+                            Sponsored by: Ohkwari Olton, Mastertool, kittenMG!, Peter Trzensiok, Spirit Shell and 965 other patrons
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer" itemprop="author">GameSave Manager</div>
+            </div>
+
+            <div class="panel panel-default news" id="editor-3012" itemscope itemtype="http://schema.org/CreativeWork">
+                <link itemprop="url" href="#editor-3012" />
+                <div class="panel-heading">
+                    <h2 class="panel-title" itemprop="name">
+                        *.sav (Wolf RPG Editor)
+                    </h2>
+                    <div class="time" itemprop="dateCreated">1/20/2018</div>
+                </div>
+                <div class="panel-body">
+                    <div class="media">
+                        <div class="media-left col-md-1">
+                            <img itemprop="image" class="media-object" src="/Content/img/wolf.png" alt="..." />
+                        </div>
+                        <div class="media-body col-md-9" itemprop="description">
+                            It has no variable names, so detect your variables by changing<br />
+                            Features: variables (money, items, stats)<br />
+                            Sponsored by: Ohkwari Olton, Mastertool, kittenMG!, Peter Trzensiok, Spirit Shell and 746 other patrons
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer" itemprop="author">GameSave Manager</div>
+            </div>
+
+            <div class="panel panel-default news" id="editor-3011" itemscope itemtype="http://schema.org/CreativeWork">
+                <link itemprop="url" href="#editor-3011" />
+                <div class="panel-heading">
+                    <h2 class="panel-title" itemprop="name">
+                        *.lsd (RPG Maker 2000/2003)
+                    </h2>
+                    <div class="time" itemprop="dateCreated">12/22/2017</div>
+                </div>
+                <div class="panel-body">
+                    <div class="media">
+                        <div class="media-left col-md-1">
+                            <img itemprop="image" class="media-object" src="/Content/img/rpg2003.png" alt="..." />
+                        </div>
+                        <div class="media-body col-md-9" itemprop="description">
+                            The old game engine, but some great games are still popular<br />
+                            Features: gold, items, stats<br />
+                            Sponsored by: Ohkwari Olton, kittenMG!, Mastertool, Peter Trzensiok, Spirit Shell and 676 other patrons
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer" itemprop="author">GameSave Manager</div>
+            </div>
+
+            <div class="panel panel-default news" id="editor-3010" itemscope itemtype="http://schema.org/CreativeWork">
+                <link itemprop="url" href="#editor-3010" />
+                <div class="panel-heading">
+                    <h2 class="panel-title" itemprop="name">
+                        *.sav (Unreal Engine games)
+                    </h2>
+                    <div class="time" itemprop="dateCreated">10/16/2017</div>
+                </div>
+                <div class="panel-body">
+                    <div class="media">
+                        <div class="media-left col-md-1">
+                            <img itemprop="image" class="media-object" src="/Content/img/ue.png" alt="..." />
+                        </div>
+                        <div class="media-body col-md-9" itemprop="description">
+                            For most games save files stores here: %AppData%\Local\<br />
+                            Features: int, float variables (money, items, stats etc...)<br />
+                            Sponsored by: Ohkwari Olton, kittenMG!, Mastertool, Peter Trzensiok, Spirit Shell and 396 other patrons
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer" itemprop="author">GameSave Manager</div>
+            </div>
+
+            <div class="panel panel-default news" id="editor-3009" itemscope itemtype="http://schema.org/CreativeWork">
+                <link itemprop="url" href="#editor-3009" />
+                <div class="panel-heading">
+                    <h2 class="panel-title" itemprop="name">
+                        *.dat, *.save (Unity3D games)
+                    </h2>
+                    <div class="time" itemprop="dateCreated">9/14/2017</div>
+                </div>
+                <div class="panel-body">
+                    <div class="media">
+                        <div class="media-left col-md-1">
+                            <img itemprop="image" class="media-object" src="/Content/img/10319312185373.5625895731b04.png" alt="..." />
+                        </div>
+                        <div class="media-body col-md-9" itemprop="description">
+                            Supported some most popular games<br />
+                            For most games save files stores here:
+                            %AppData%\LocalLow\[company name]\[product name]<br />
+                            or in the registry under HKCU\Software\[company name]\[product name] key<br />
+                            Features: money, items, stats etc..<br />
+                            Sponsored by: Ohkwari Olton, kittenMG!, Mastertool, Peter Trzensiok, Spirit Shell and 254 other patrons
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer" itemprop="author">GameSave Manager</div>
+            </div>
+
+            <div class="panel panel-default news" id="editor-3008" itemscope itemtype="http://schema.org/CreativeWork">
+                <link itemprop="url" href="#editor-3008" />
+                <div class="panel-heading">
+                    <h2 class="panel-title" itemprop="name">
+                        *.sol editor (Adobe Flash)
+                    </h2>
+                    <div class="time" itemprop="dateCreated">7/10/2017</div>
+                </div>
+                <div class="panel-body">
+                    <div class="media">
+                        <div class="media-left col-md-1">
+                            <img itemprop="image" class="media-object" src="/Content/img/flash.png" alt="..." />
+                        </div>
+                        <div class="media-body col-md-9" itemprop="description">
+                            Flash Player stores your files here: %AppData%\Roaming\Macromedia\Flash Player\#SharedObjects<br />
+                            Features: variables (money, items, stats etc, all integer numbers)<br />
+                            Sponsored by: Ohkwari Olton, kittenMG!, Mastertool and 147 other patrons. You should be grateful to them!
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer" itemprop="author">GameSave Manager</div>
+            </div>
+
+            <div class="panel panel-default news" id="editor-3006" itemscope itemtype="http://schema.org/CreativeWork">
+                <link itemprop="url" href="#editor-3006" />
+                <div class="panel-heading">
+                    <h2 class="panel-title" itemprop="name">
+                        *.rxdata editor (RPG Maker XP)
+                    </h2>
+                    <div class="time" itemprop="dateCreated">5/16/2017</div>
+                </div>
+                <div class="panel-body">
+                    <div class="media">
+                        <div class="media-left col-md-1">
+                            <img itemprop="image" class="media-object" src="/Content/img/xp.png" alt="..." />
+                        </div>
+                        <div class="media-body col-md-9" itemprop="description">
+                            Exists olds but high quality games of this engine. If you have one - welcome to use this site.<br />
+                            Features: gold, items, weapons, armors, variables<br />
+                            Sponsored by: Ohkwari Olton, kittenMG! and 82 other patrons. You should be grateful to them!
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer" itemprop="author">GameSave Manager</div>
+            </div>
+
+            <div class="panel panel-default news" id="editor-3005" itemscope itemtype="http://schema.org/CreativeWork">
+                <link itemprop="url" href="#editor-3005" />
+                <div class="panel-heading">
+                    <h2 class="panel-title" itemprop="name">
+                        *.rvdata editor (RPG Maker VX)
+                    </h2>
+                    <div class="time" itemprop="dateCreated">5/15/2017</div>
+                </div>
+                <div class="panel-body">
+                    <div class="media">
+                        <div class="media-left col-md-1">
+                            <img itemprop="image" class="media-object" src="/Content/img/vx.png" alt="..." />
+                        </div>
+                        <div class="media-body col-md-9" itemprop="description">
+                            Previous version of Ace, but it's supports too.<br />
+                            Features: gold, items, weapons, armors, variables<br />
+                            Sponsored by: Ohkwari Olton, kittenMG! and 80 other patrons. You should be grateful to them!
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer" itemprop="author">GameSave Manager</div>
+            </div>
+
+            <div class="panel panel-default news" id="editor-3003" itemscope itemtype="http://schema.org/CreativeWork">
+                <link itemprop="url" href="#editor-3003" />
+                <div class="panel-heading">
+                    <h2 class="panel-title" itemprop="name">
+                        *.save editor (Ren'Py games)
+                    </h2>
+                    <div class="time" itemprop="dateCreated">1/21/2017</div>
+                </div>
+                <div class="panel-body">
+                    <div class="media">
+                        <div class="media-left col-md-1">
+                            <img itemprop="image" class="media-object" src="/Content/img/rp_128x128.png" alt="..." />
+                        </div>
+                        <div class="media-body col-md-9" itemprop="description">
+                            The Ren'Py save editor can scan for variables from the savefile and allow you to change them.<br />
+                            You should be careful with editing, just find your money, gold, credits etc variable.<br />
+                            Features: variables (money, items, stats etc...)<br />
+                            And do not change any unknown variables please.
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer" itemprop="author">GameSave Manager</div>
+            </div>
+
+            <div class="panel panel-default news" id="editor-3002" itemscope itemtype="http://schema.org/CreativeWork">
+                <link itemprop="url" href="#editor-3002" />
+                <div class="panel-heading">
+                    <h2 class="panel-title" itemprop="name">
+                        *.rpgsave editor (RPG Maker MV)
+                    </h2>
+                    <div class="time" itemprop="dateCreated">11/26/2016</div>
+                </div>
+                <div class="panel-body">
+                    <div class="media">
+                        <div class="media-left col-md-1">
+                            <img itemprop="image" class="media-object" src="/Content/img/Game_IDR_MAINFRAME.ico_256x256.png" alt="..." />
+                        </div>
+                        <div class="media-body col-md-9" itemprop="description">
+                            RPG Maker MV is latest version in the series. And already was published a lot of games by this engine.<br />
+                            Save file should have rpgsave extension like "file3.rpgsave".<br />
+                            Features: gold, parameters, items, weapons, armors, variables
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer" itemprop="author">GameSave Manager</div>
+            </div>
+
+            <div class="panel panel-default news" id="editor-3001" itemscope itemtype="http://schema.org/CreativeWork">
+                <link itemprop="url" href="#editor-3001" />
+                <div class="panel-heading">
+                    <h2 class="panel-title" itemprop="name">
+                        *.rvdata2 editor (RPG Maker VX Ace)
+                    </h2>
+                    <div class="time" itemprop="dateCreated">11/14/2016</div>
+                </div>
+                <div class="panel-body">
+                    <div class="media">
+                        <div class="media-left col-md-1">
+                            <img itemprop="image" class="media-object" src="/Content/img/o_c1ee385455e3465e-2.png" alt="..." />
+                        </div>
+                        <div class="media-body col-md-9" itemprop="description">
+                            It's a tool that lets you edit the contents of a save game of your choosing.<br />
+                            Should be RPG Maker VX Ace save file like "Save5.rvdata2".<br />
+                            Features: gold, parameters, items, weapons, armors, variables
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer" itemprop="author">GameSave Manager</div>
+            </div>
+
+        </div>
+
+        <div class="btn-group-vertical qnavi" role="group" aria-label="Quick navigation">
+            <button type="button" class="btn btn-default" onclick="$('html, body').animate({ scrollTop: 0 }, 100);"><i class="glyphicon glyphicon-arrow-up" aria-hidden="true"></i></button>
+            <button type="button" class="btn btn-default" onclick="$('html, body').animate({ scrollTop: $(document).height() }, 100);"><i class="glyphicon glyphicon-arrow-down" aria-hidden="true"></i></button>
+        </div>
+
+        <hr />
+        <footer>
+            <div class="footer-hint">
+                <i>All uploaded files are automatically deleted after 24 hours.</i> <a href="mailto:support@gamesavemanager.com">Contact Support</a>
+            </div>
+            <p>&copy; 2025 - GameSave Manager</p>
+        </footer>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/Scripts/jquery.ui.widget.js"></script>
+    <script src="/Scripts/fileupload/vendor/jquery.ui.widget.js"></script>
+    <script src="/Scripts/fileupload/jquery.fileupload.js"></script>
+    <script src="/Scripts/fileupload/jquery.fileupload-process.js"></script>
+    <script src="/Scripts/fileupload/jquery.iframe-transport.js"></script>
+
+    <script type="text/javascript">
+        function JSONGet(selector) {
+            return JSON.parse($(selector).val());
+        }
+
+        function JSONSet(selector, data) {
+            $(selector).val(JSON.stringify(data));
+        }
+
+        function Normalize(val, min, max) {
+            val = val.replace(/,/g, ".");
+            val = Number(val);
+            if (isNaN(val)) return min;
+            if (val < min) return min;
+            if (val > max) return max;
+            return val;
+        }
+
+        function NPrompt(msg, val, min, max) {
+            var ud = prompt(msg, val);
+            if (ud === null) {
+                return val;
+            }
+            return Normalize(ud, min, max);
+        }
+
+        function OnDownload() {
+            $('#editorForm').hide();
+            $('#news').show();
+            $('.hint42').show();
+            $('html, body').animate({ scrollTop: 0 }, 100);
+        }
+
+        var uploadSizeLimit = 37232640;
+        $(function () {
+            $.ajaxSetup({
+                // Disable caching of AJAX responses
+                cache: false
+            });
+            var url = '/UploadSave';
+            $('#fileupload').fileupload({
+                url: url,
+                maxNumberOfFiles: 1,
+                maxFileSize: uploadSizeLimit,
+                singleFileUploads: false,
+                drop: function (e, data) {
+                    $('#editorForm').hide();
+                },
+                done: function (e, data) {
+                    var id = JSON.parse(data.result).id;
+                    var t = $('#editorForm');
+                    t.html("<b>Loading...</b>");
+                    t.load('/SaveEdit2/'+id, function (response, status, xhr) {
+                        if (status == "error") {
+                            var msg = "Sorry but there was an error: ";
+                            t.html(msg + xhr.status + " " + xhr.statusText);
+                        }
+                    });
+                    $('#news').hide();
+                    $('.hint42').hide();
+                    $('#editorForm').show();
+                    $('#progress .progress-bar').css('width', '0%');
+                },
+                error: function (e, data) {
+                    alert("File is incorrect or too large (25mb limit).");
+                },
+                progressall: function (e, data) {
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    $('#progress .progress-bar').css(
+                        'width',
+                        progress + '%'
+                    );
+                },
+                send: function (e, data) {
+                    var bS = 0;
+                    if (data.files.length>1) {
+                        alert('You have to upload one save file.');
+                        return false;
+                    }
+                    for (var fileN in data.files) {
+                        bS += data.files[fileN].size;
+                    }
+                    if (bS>uploadSizeLimit) {
+                        alert('File is too large. '+Math.round(uploadSizeLimit/1048576)+'Mb maximum file size.');
+                        return false;
+                    }
+                },
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $(document).on("keydown", "input", function (event) {
+                if (event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+        });
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-87347655-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+</body>
+</html>
